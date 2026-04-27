@@ -32,9 +32,10 @@ jobs:
           mkdir -p cmdline-tools/latest
           mv cmdline-tools/* cmdline-tools/latest/ || true
 
-          # 🔥 ФИКС для buildozer (самое важное)
+          # 🔥 ЖЁСТКИЙ ФИКС sdkmanager
           mkdir -p tools/bin
-          ln -s $SDK_PATH/cmdline-tools/latest/bin/sdkmanager tools/bin/sdkmanager
+          cp cmdline-tools/latest/bin/sdkmanager tools/bin/sdkmanager
+          chmod +x tools/bin/sdkmanager
 
           export PATH=$SDK_PATH/cmdline-tools/latest/bin:$PATH
 
