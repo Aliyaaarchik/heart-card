@@ -1,8 +1,5 @@
 name: Build APK
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-  
 on: [push]
 
 jobs:
@@ -12,12 +9,18 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Build APK
-      uses: docker://kivy/buildozer
-      with:
-        args: android debug
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y python3-pip python3-venv git zip unzip openjdk-17-jdk
+        pip install --upgrade pip
+        pip install buildozer cython kivy
 
-    - name: Upload
+    - name: Build APK
+      run: |
+        buildozer android debug
+
+    - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: apk
