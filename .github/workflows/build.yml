@@ -19,30 +19,41 @@ jobs:
         pip install --upgrade pip
         pip install cython buildozer
 
-    - name: Setup Android SDK
-      run: |
-        mkdir -p $HOME/.buildozer/android/platform
-        mkdir -p $HOME/android-sdk
+     - name: Setup Android SDK
+       run: |
+         SDK_PATH=$HOME/.buildozer/android/platform/android-sdk
 
-        cd $HOME/android-sdk
+         mkdir -p $SDK_PATH
+         cd $SDK_PATH
 
-        wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
-        unzip commandlinetools-linux-9477386_latest.zip
+         wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
+         unzip commandlinetools-linux-9477386_latest.zip
 
-        mkdir -p cmdline-tools/latest
-        mv cmdline-tools/* cmdline-tools/latest/ || true
+         mkdir -p cmdline-tools/latest
+         mv cmdline-tools/* cmdline-tools/latest/ || true
 
-        export ANDROID_HOME=$HOME/android-sdk
-        export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
+         export PATH=$SDK_PATH/cmdline-tools/latest/bin:$PATH
 
-        yes | sdkmanager --licenses
-        sdkmanager "platform-tools" "platforms;android-31" "build-tools;33.0.0"
+         yes | sdkmanager --licenses
+         sdkmanager "platform-tools" "platforms;android-31" "build-tools;33.0.0"
+         cd $HOME/android-sdk
+
+         wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
+         unzip commandlinetools-linux-9477386_latest.zip
+
+         mkdir -p cmdline-tools/latest
+         mv cmdline-tools/* cmdline-tools/latest/ || true
+
+         export ANDROID_HOME=$HOME/android-sdk
+         export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
+
+         yes | sdkmanager --licenses
+         sdkmanager "platform-tools" "platforms;android-31" "build-tools;33.0.0"
 
     - name: Build APK
       run: |
-        export ANDROID_HOME=$HOME/android-sdk
-        export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
         buildozer -v android debug
+      
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
