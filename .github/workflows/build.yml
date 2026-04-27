@@ -9,16 +9,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install deps
+      - name: Install system dependencies
         run: |
           sudo apt update
-          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip
+          sudo apt install -y \
+            git zip unzip openjdk-17-jdk \
+            python3-pip python3-dev \
+            build-essential libffi-dev libssl-dev
 
-          pip install --upgrade pip
+      - name: Install Python tools
+        run: |
+          pip install --upgrade pip setuptools wheel
           pip install cython buildozer
 
       - name: Build APK
         run: |
+          buildozer init || true
           yes | buildozer android debug
 
       - name: Upload APK
