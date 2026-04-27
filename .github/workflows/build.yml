@@ -7,56 +7,42 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Install system deps
-      run: |
-        sudo apt update
-        sudo apt install -y python3-pip git zip unzip openjdk-17-jdk
+      - name: Install system deps
+        run: |
+          sudo apt update
+          sudo apt install -y python3-pip git zip unzip openjdk-17-jdk
 
-    - name: Install Python deps
-      run: |
-        pip install --upgrade pip
-        pip install cython buildozer
+      - name: Install Python deps
+        run: |
+          pip install --upgrade pip
+          pip install cython buildozer
 
-     - name: Setup Android SDK
-       run: |
-         SDK_PATH=$HOME/.buildozer/android/platform/android-sdk
+      - name: Setup Android SDK
+        run: |
+          SDK_PATH=$HOME/.buildozer/android/platform/android-sdk
 
-         mkdir -p $SDK_PATH
-         cd $SDK_PATH
+          mkdir -p $SDK_PATH
+          cd $SDK_PATH
 
-         wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
-         unzip commandlinetools-linux-9477386_latest.zip
+          wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
+          unzip commandlinetools-linux-9477386_latest.zip
 
-         mkdir -p cmdline-tools/latest
-         mv cmdline-tools/* cmdline-tools/latest/ || true
+          mkdir -p cmdline-tools/latest
+          mv cmdline-tools/* cmdline-tools/latest/ || true
 
-         export PATH=$SDK_PATH/cmdline-tools/latest/bin:$PATH
+          export PATH=$SDK_PATH/cmdline-tools/latest/bin:$PATH
 
-         yes | sdkmanager --licenses
-         sdkmanager "platform-tools" "platforms;android-31" "build-tools;33.0.0"
-         cd $HOME/android-sdk
+          yes | sdkmanager --licenses
+          sdkmanager "platform-tools" "platforms;android-31" "build-tools;33.0.0"
 
-         wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
-         unzip commandlinetools-linux-9477386_latest.zip
+      - name: Build APK
+        run: |
+          buildozer -v android debug
 
-         mkdir -p cmdline-tools/latest
-         mv cmdline-tools/* cmdline-tools/latest/ || true
-
-         export ANDROID_HOME=$HOME/android-sdk
-         export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
-
-         yes | sdkmanager --licenses
-         sdkmanager "platform-tools" "platforms;android-31" "build-tools;33.0.0"
-
-    - name: Build APK
-      run: |
-        buildozer -v android debug
-      
-
-    - name: Upload APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: apk
-        path: bin/*.apk
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk
+          path: bin/*.apk
