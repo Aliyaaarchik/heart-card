@@ -17,12 +17,13 @@ jobs:
             python3-pip python3-dev \
             build-essential \
             libffi-dev libssl-dev \
-            autoconf automake libtool libtool-bin pkg-config m4
+            autoconf automake libtool pkg-config
 
-      - name: Install Python tools
+      - name: Install Python tools (фикс версии!)
         run: |
-          pip install --upgrade pip setuptools wheel
-          pip install cython buildozer
+          pip install --upgrade pip
+          pip install "cython==0.29.33"
+          pip install "buildozer==1.5.0"
 
       - name: Clean build
         run: |
