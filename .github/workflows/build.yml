@@ -17,9 +17,9 @@ jobs:
             python3-pip python3-dev \
             build-essential \
             libffi-dev libssl-dev \
-            autoconf automake libtool pkg-config
+            autoconf automake libtool libtool-bin pkg-config m4
 
-      - name: Install Python tools (фикс версии!)
+      - name: Install Python tools
         run: |
           pip install --upgrade pip
           pip install "cython==0.29.33"
@@ -27,11 +27,12 @@ jobs:
 
       - name: Clean build
         run: |
+          rm -rf .buildozer
           buildozer android clean || true
 
       - name: Build APK
         run: |
-          yes | buildozer android debug
+          yes | buildozer -v android debug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
